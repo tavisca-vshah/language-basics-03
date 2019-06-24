@@ -41,13 +41,11 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
 
 		public static List<int> FindAllIndex(int[] elements, List<int> indexLists, int elem) {
 			/* Generate all index of an element */
-			List<int> indexList = new List<int>();
 
-			foreach (int i in indexLists) {
-				if (elements[i] == elem) 
-				indexList.Add(i);
-			}
-
+			var query = from i in indexLists 
+				where elements[i] == elem 
+				select i; 
+			var indexList = query.ToList();
 			return indexList;
 		}
 
@@ -58,7 +56,7 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
 
 			for (int i = 1; i < indexList.Count; i++) {
 				if (elements[indexList[i]] > max)
-				 max = elements[indexList[i]];
+				max = elements[indexList[i]];
 			}
 
 			return max;
@@ -81,75 +79,73 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
 		    /************************************************************
 			 Idea is to Don't search for min/max in complete array from index 0,
 			 Instead make an indexed list which limits your search element for min/max
-			*************************************************************/
-			
-			int[] calories = new int[protein.Length];
-			int[] item = new int[dietPlans.Length];
+			 *************************************************************/
 
-			for (int i = 0; i < protein.Length; i++) {
-				calories[i] = (protein[i] + carbs[i]) * 5 + fat[i] * 9;
+			 int[] calories = new int[protein.Length];
+			 int[] item = new int[dietPlans.Length];
+
+			 for (int i = 0; i < protein.Length; i++) {
+			 	calories[i] = (protein[i] + carbs[i]) * 5 + fat[i] * 9;
+			 }
+
+			 for (int i = 0; i < dietPlans.Length; i++) {
+			 	string dietPlan = dietPlans[i];
+			 	List<int> indexList = new List<int>();
+			 	int max, min;
+
+			 	if (dietPlan.Length == 0) {
+			 		item[i] = 0;
+			 	}
+
+			 	indexList=Enumerable.Range(0, protein.Length).ToList();
+
+			 	foreach (char ch in dietPlan) {
+
+			 		switch(ch) {
+
+			 			case 'p':
+			 			min = GetMin(protein, indexList);
+			 			indexList = FindAllIndex(protein, indexList, min);
+			 			break;
+			 			case 'P':
+			 			max = GetMax(protein, indexList);
+			 			indexList = FindAllIndex(protein, indexList, max);
+			 			break;
+
+			 			case 'c':
+			 			min = GetMin(carbs, indexList);
+			 			indexList = FindAllIndex(carbs, indexList, min);
+			 			break;
+			 			case 'C':
+			 			max = GetMax(carbs, indexList);
+			 			indexList = FindAllIndex(carbs, indexList, max);
+			 			break;
+
+			 			case 'f':
+			 			min = GetMin(fat, indexList);
+			 			indexList = FindAllIndex(fat, indexList, min);
+			 			break;
+			 			case 'F':
+			 			max = GetMax(fat, indexList);
+			 			indexList = FindAllIndex(fat, indexList, max);
+			 			break;
+
+			 			case 't':
+			 			min = GetMin(calories, indexList);
+			 			indexList = FindAllIndex(calories, indexList, min);
+			 			break;
+			 			case 'T':
+			 			max = GetMax(calories, indexList);
+			 			indexList = FindAllIndex(calories, indexList, max);
+			 			break;
+
+			 		}
+			 	}
+
+			 	item[i] = indexList[0];
+			 }
+
+			 return item;
 			}
-			
-			for (int i = 0; i < dietPlans.Length; i++) {
-				string dietPlan = dietPlans[i];
-				List<int> indexList = new List<int>();
-                int max, min;
-
-				if (dietPlan.Length == 0) {
-					item[i] = 0;
-				}
-
-				for (int j = 0; j < protein.Length; j++) 
-				indexList.Add(j);
-
-				
-				foreach (char ch in dietPlan) {
-
-					switch(ch) {
-
-						case 'p':
-						min = GetMin(protein, indexList);
-						indexList = FindAllIndex(protein, indexList, min);
-						break;
-						case 'P':
-						max = GetMax(protein, indexList);
-						indexList = FindAllIndex(protein, indexList, max);
-						break;
-
-						case 'c':
-						min = GetMin(carbs, indexList);
-						indexList = FindAllIndex(carbs, indexList, min);
-						break;
-						case 'C':
-						max = GetMax(carbs, indexList);
-						indexList = FindAllIndex(carbs, indexList, max);
-						break;
-
-						case 'f':
-						min = GetMin(fat, indexList);
-						indexList = FindAllIndex(fat, indexList, min);
-						break;
-						case 'F':
-						max = GetMax(fat, indexList);
-						indexList = FindAllIndex(fat, indexList, max);
-						break;
-						
-						case 't':
-						min = GetMin(calories, indexList);
-						indexList = FindAllIndex(calories, indexList, min);
-						break;
-						case 'T':
-						max = GetMax(calories, indexList);
-						indexList = FindAllIndex(calories, indexList, max);
-						break;
-						
-					}
-				}
-
-				item[i] = indexList[0];
-			}
-
-			return item;
 		}
 	}
-}
