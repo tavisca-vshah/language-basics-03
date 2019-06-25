@@ -40,13 +40,10 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
 		}
 
 		public static List<int> FindAllIndex(int[] elements, List<int> indexLists, int elem) {
-			/* Generate all index of an element */
-
-			var query = from i in indexLists 
-				where elements[i] == elem 
-				select i; 
-			var indexList = query.ToList();
-			return indexList;
+			var result=indexLists
+				.Where(index =>  elements[index]== elem)
+				.ToList();
+			return result;
 		}
 
 		public static int GetMax(int[] elements, List<int> indexList) {
